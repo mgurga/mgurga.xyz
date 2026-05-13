@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -36,7 +37,7 @@ func main() {
 	// read hits file if it exists, create one if it does not exist
 	hits_data, err := os.ReadFile("hits")
 	if err == nil {
-		readhits, e := strconv.Atoi(string(hits_data))
+		readhits, e := strconv.Atoi(strings.TrimSpace(string(hits_data)))
 		if e == nil {
 			hits = readhits
 		} else {
