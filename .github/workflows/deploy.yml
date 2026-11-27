@@ -41,7 +41,9 @@ jobs:
         run: go build -v
 
       - name: Copy to VPS
-        run: scp ./mgurga.xyz vps:/home/mgurga/mgurga.xyz
+        run: |
+          ssh vps 'rm /home/mgurga/mgurga.xyz'
+          scp ./mgurga.xyz vps:/home/mgurga/mgurga.xyz
 
       - name: Restart web server
         run: ssh vps 'systemctl restart personalwebsite'
