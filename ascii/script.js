@@ -4,43 +4,45 @@ function rand(min, max) {
   return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
 }
 
-const ichar = " "; // invisible character
-const rawlines = document.getElementById("rawdata").innerHTML;
-const lines = rawlines.replaceAll("\n", "").split("<br />");
+function start() {
+  const ichar = " "; // invisible character
+  const rawlines = document.getElementById("rawdata").innerHTML;
+  const lines = rawlines.replaceAll("\n", "").split("<br />");
 
-let stretched_lines = [];
+  let stretched_lines = [];
 
-for (const line of lines) {
-  let stretched_line = "";
+  for (const line of lines) {
+    let stretched_line = "";
 
-  let reading_tag = false;
-  for (let char of line) {
-    if (char == ">") {
-      reading_tag = false;
+    let reading_tag = false;
+    for (let char of line) {
+      if (char == ">") {
+        reading_tag = false;
+        stretched_line += char;
+        continue;
+      }
+      if (char == "<" || reading_tag) {
+        reading_tag = true;
+        stretched_line += char;
+        continue;
+      }
+
+      stretched_line += ichar.repeat(rand(0, 15));
       stretched_line += char;
-      continue;
-    }
-    if (char == "<" || reading_tag) {
-      reading_tag = true;
-      stretched_line += char;
-      continue;
     }
 
-    stretched_line += ichar.repeat(rand(0, 15));
-    stretched_line += char;
+    stretched_lines.push(stretched_line);
   }
 
-  stretched_lines.push(stretched_line);
-}
+  document.getElementById("out").innerHTML = stretched_lines.join("<br>");
 
-document.getElementById("out").innerHTML = stretched_lines.join("<br>");
-
-let tickint;
-if (localStorage.getItem("played") == "true") {
-  document.getElementById("out").innerHTML =
-    document.getElementById("rawdata").innerHTML;
-} else {
-  tickint = setInterval(tick, 7);
+  let tickint;
+  if (localStorage.getItem("played") == "true") {
+    document.getElementById("out").innerHTML =
+      document.getElementById("rawdata").innerHTML;
+  } else {
+    tickint = setInterval(tick, 7);
+  }
 }
 
 function tick() {
@@ -63,4 +65,11 @@ function replay() {
   localStorage.clear();
   location.reload();
   return false;
+}
+
+const reduce_motion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)",
+).matches;
+if (!reduce_motion) {
+  start();
 }
